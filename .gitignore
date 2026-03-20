@@ -1,0 +1,23 @@
+# Ignorar pastas
+Jogo/src/jogo/execucao/*
+.idea/*
+out/*
+
+# Ignorar arquivos
+Jogo/Jogo.iml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
