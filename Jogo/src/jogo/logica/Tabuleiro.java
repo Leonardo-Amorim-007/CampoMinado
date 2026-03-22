@@ -1,6 +1,6 @@
 package jogo.logica;
+import java.util.ArrayList;
 import java.util.Random;
-
 
 public class Tabuleiro {
     private int qtdCelulas, qtdBombas;
@@ -8,7 +8,8 @@ public class Tabuleiro {
     private int porcentagemBombas;
     private Celula[][] tabuleiro;
 
-    // Criação do tabuleiro
+    // Inicio - Criacao do tabuleiro //
+
     // Coleta e verifica os parametros para a criação do tabuleiro
     public boolean definirParametros (int col, int lin, int porBombas) {
         boolean resposta = false;
@@ -46,7 +47,7 @@ public class Tabuleiro {
             do {
                 posicaoColuna = random.nextInt(0, (coluna-1));
                 posicaoLinha = random.nextInt(0, (linha-1));
-            } while (tabuleiro[posicaoLinha][posicaoColuna].isBomba());
+            } while (tabuleiro[posicaoLinha][posicaoColuna].isBomb());
             tabuleiro[posicaoLinha][posicaoColuna].setBomba();
         }
 
@@ -56,7 +57,7 @@ public class Tabuleiro {
     public void inserirNumeros () {
         for(int lin=0; lin<linha; lin++) {
             for (int col= 0; col<coluna; col++) {
-                if (tabuleiro[lin][col].isBomba()) {continue;}
+                if (tabuleiro[lin][col].isBomb()) {continue;}
                 for (int linvizinha=-1; linvizinha<=1; linvizinha++) {
                     for (int colvizinha = -1; colvizinha <= 1; colvizinha++) {
                         if ((col+colvizinha) < 0 || (col+colvizinha) == coluna) continue;
@@ -67,20 +68,51 @@ public class Tabuleiro {
             }
         }
     }
-    
+
+    // Fim - Criacao do tabuleiro //
+
+    // Modificacao das celulas
+    public boolean setAberto (int linha, int coluna) {return tabuleiro[linha][coluna].setAbrir();}
+
+    // Saída de dados
+    public int getlinha() {return linha;}
+
+    public int getColuna() {return coluna;}
+
+    public boolean fimExplosao (int linha, int coluna) {return tabuleiro[linha][coluna].isBomb();}
+
     // Objeto de teste
     public void mostrarTabuleiro () {
         for (int i=0; i<linha; i++) {
             for (int j=0; j<coluna; j++) {
                 System.out.print(" [");
-                if (tabuleiro[i][j].isBomba()) {
-                    System.out.print("B");
+                if (tabuleiro[i][j].isAberto()) {
+                    if (tabuleiro[i][j].isBomb()) {
+                        System.out.print("B");
+                    } else {
+                        System.out.print(tabuleiro[i][j].getQtdBombas());
+                    }
                 } else {
-                    System.out.print(tabuleiro[i][j].getQtdBombas());
+                    System.out.print(" ");
                 }
                 System.out.print("] ");
             }
             System.out.println(" ");
+        }
+    }
+
+    public void mostrarTabuleiroCompleto () {
+        for (int i=0; i<linha; i++) {
+            for (int j=0; j<coluna; j++) {
+                System.out.print(" [");
+                    if (tabuleiro[i][j].isBomb()) {
+                        System.out.print("B");
+                    } else {
+                        System.out.print(tabuleiro[i][j].getQtdBombas());
+                    }
+                System.out.print("] ");
+            }
+        System.out.println(" ");
         }
     }
 }

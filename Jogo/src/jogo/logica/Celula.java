@@ -6,7 +6,7 @@ public class Celula {
     private boolean bomba = false;
     private boolean bandeira = false;
     private boolean aberto = false;
-    private int qtdBombas;
+    private int qtdBombas = 0;
     private ArrayList<Celula> vizinhos = new ArrayList<>();
 
 
@@ -19,9 +19,18 @@ public class Celula {
         qtdBombas = num;
     }
 
-    public void setabrir () {
+    public boolean setAbrir () {
         if (!aberto && !bandeira) {
             aberto = true;
+            // Abertura dos vizinhos
+            if (this.qtdBombas == 0 && !this.bomba) {
+                for (Celula vizinho : vizinhos) {
+                    vizinho.setAbrir();
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -33,23 +42,17 @@ public class Celula {
 
     public void setVizinho (Celula vizinho) {
         vizinhos.add(vizinho);
-        if (vizinho.isBomba()) {
+        if (vizinho.isBomb()) {
             qtdBombas++;
         }
     }
 
     // Metodos de retono
-    public boolean isAberto () {
-        return aberto;
-    }
+    public boolean isAberto () {return aberto;}
 
-    public boolean isBomba () {
-        return bomba;
-    }
+    public boolean isBomb() {return bomba;}
 
-    public int getQtdBombas () {
-        return qtdBombas;
-    }
+    public int getQtdBombas () {return qtdBombas;}
 
     public boolean isBandeira () {
         return bandeira;
