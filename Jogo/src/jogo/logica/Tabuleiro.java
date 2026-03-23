@@ -1,5 +1,4 @@
 package jogo.logica;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Tabuleiro {
@@ -71,48 +70,25 @@ public class Tabuleiro {
 
     // Fim - Criacao do tabuleiro //
 
-    // Modificacao das celulas
+    // Inicio - Modificacao das celulas
     public boolean setAberto (int linha, int coluna) {return tabuleiro[linha][coluna].setAbrir();}
 
+    public boolean setBandeira (int linha, int coluna) {return tabuleiro[linha][coluna].setBandeira();}
+
+
     // Saída de dados
+    public boolean getAberto (int linha, int coluna) {return tabuleiro[linha][coluna].isAberto();}
+
     public int getlinha() {return linha;}
 
     public int getColuna() {return coluna;}
 
-    public boolean fimExplosao (int linha, int coluna) {return tabuleiro[linha][coluna].isBomb();}
+    public boolean getBomb (int linha, int coluna) {return tabuleiro[linha][coluna].isBomb();}
 
-    // Objeto de teste
-    public void mostrarTabuleiro () {
-        for (int i=0; i<linha; i++) {
-            for (int j=0; j<coluna; j++) {
-                System.out.print(" [");
-                if (tabuleiro[i][j].isAberto()) {
-                    if (tabuleiro[i][j].isBomb()) {
-                        System.out.print("B");
-                    } else {
-                        System.out.print(tabuleiro[i][j].getQtdBombas());
-                    }
-                } else {
-                    System.out.print(" ");
-                }
-                System.out.print("] ");
-            }
-            System.out.println(" ");
-        }
-    }
+    public boolean getBandeira (int linha, int coluna) {return tabuleiro[linha][coluna].isBandeira();}
 
-    public void mostrarTabuleiroCompleto () {
-        for (int i=0; i<linha; i++) {
-            for (int j=0; j<coluna; j++) {
-                System.out.print(" [");
-                    if (tabuleiro[i][j].isBomb()) {
-                        System.out.print("B");
-                    } else {
-                        System.out.print(tabuleiro[i][j].getQtdBombas());
-                    }
-                System.out.print("] ");
-            }
-        System.out.println(" ");
-        }
-    }
+    public int getQtdBombasCelulas (int linha, int coluna) {return tabuleiro[linha][coluna].getQtdBombas();}
+
+    public int getQtdBombas () {return qtdBombas;}
+
 }

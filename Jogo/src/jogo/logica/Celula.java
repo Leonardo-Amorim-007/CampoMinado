@@ -34,9 +34,12 @@ public class Celula {
         }
     }
 
-    public void setalternarBandeira () {
+    public boolean setBandeira () {
         if (!aberto) {
             bandeira = !bandeira;
+            return true;
+        } else {
+            return false;
         }
     }
 
