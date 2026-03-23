@@ -4,55 +4,57 @@ public class Interacao {
     private Tabuleiro tabuleiro;
     private int qtdBandeirasColocadas = 0;
 
-    public boolean verificarJogada(int linha, int coluna) {
-        return  linha >= 0 && linha < tabuleiro.getlinha() && coluna >= 0 && coluna < tabuleiro.getColuna();
-    }
-
     public void getTabuleiro(Tabuleiro tabuleiro) {this.tabuleiro = tabuleiro;}
 
-    public record RepostaRevelarCelula (boolean fim, String mensagem) {}
+    public record RespostaRevelarCelula (boolean fim, String mensagem) {}
 
     // Revela a celula e retorna uma mensagem dizendo o que aconteceu
-    public RepostaRevelarCelula revelarCelula(int linha, int coluna) {
-        String mensagem;
-        boolean fim = false;
-        if (verificarJogada(linha, coluna)) {
-            if (tabuleiro.setAberto(linha, coluna)) {
-                if (tabuleiro.getBomb(linha, coluna)) {
-                    fim = true;
-                    mensagem = "Que pena, você explodiu e não sobreviveu.";
-                } else {
-                    mensagem = "Celula revelada com sucesso.";
-                }
-            } else if (tabuleiro.getBandeira(linha, coluna)){
-                mensagem = "A celula contem uma BANDEIRA!";
-            } else {
-                mensagem = "A celula ja esta ABERTA!";
-            }
-        } else {
-            mensagem = "Os parametros foram inseridos INCORRETAMENTE!";
+    public RespostaRevelarCelula revelarCelula(int linha, int coluna) {
+        if (!tabuleiro.VerificarCoordenada(linha, coluna)) {
+            return new RespostaRevelarCelula(false, "Os parametros foram inseridos INCORRETAMENTE!");
         }
-        return new RepostaRevelarCelula(fim, mensagem);
+
+        if (tabuleiro.getBandeira(linha, coluna)) {
+            return new RespostaRevelarCelula(false, "A celula contem uma BANDEIRA!");
+        }
+
+        // Abre a celula e coleta a respota se foi aberta, se terminou o jogo, se terminou o estado que terminaou
+        Tabuleiro.RespostaSetAberto resposta = tabuleiro.setAberto(linha, coluna);
+
+        if (!resposta.aberto()) {
+            return new RespostaRevelarCelula(false, "A celula ja esta ABERTA!");
+        }
+
+        // Verificacao da vitoria e caso positiva, retorna a mensagem de vitoria ou derrota
+        if (resposta.fim()) {
+            return new RespostaRevelarCelula(true, fimDeJogo(resposta.vitoria()));
+        }
+
+        return new RespostaRevelarCelula(false, "Celula revelada com sucesso.");
     }
 
+    // Realiza a mudanca no status da bandeira
     public String trocarBandeira (int linha, int coluna) {
-        String mensagem;
-        if (verificarJogada(linha, coluna)) {
-            if (tabuleiro.getQtdBombas() >= qtdBandeirasColocadas) {
-                if (!tabuleiro.getBandeira(linha, coluna) & tabuleiro.setBandeira(linha, coluna)) {
-                    mensagem = "Bandeira colocada com sucesso.";
-                    qtdBandeirasColocadas++;
-                } else {
-                    mensagem = "Bandeira retirada com sucesso.";
-                    qtdBandeirasColocadas--;
-                }
-            } else {
-                mensagem = "Você já colocou todas as bandeiras que tinha!";
-            }
-        } else {
-            mensagem = "Os parametros foram inseridos INCORRETAMENTE!";
+        if (!tabuleiro.VerificarCoordenada(linha, coluna)) {return "Os parametros foram inseridos INCORRETAMENTE!";}
+
+        if (qtdBandeirasColocadas == tabuleiro.getQtdBombas()) {return "Você já colocou todas as bandeiras que tinha!";}
+
+        if (!tabuleiro.setBandeira(linha, coluna)) {return "A celula esta revelada, nao pode colocar a bandeira!";}
+
+        if (!tabuleiro.getBandeira(linha, coluna)) {
+            qtdBandeirasColocadas--;
+            return "Bandeira retirada com sucesso.";
         }
-        return mensagem;
+        // Caso todas as condicoes sejam falsas
+        qtdBandeirasColocadas++;
+        return "Bandeira colocada com sucesso.";
     }
 
+    public String fimDeJogo (boolean vitoria) {
+        if (!vitoria) {
+            return "Infelizmente, você pisou numa bomba e se explodiu.";
+        } else {
+            return "Parabéns, você conseguiu atravessar o campo sem se explodir. Agora tem outro te esperando!";
+        }
+    }
 }

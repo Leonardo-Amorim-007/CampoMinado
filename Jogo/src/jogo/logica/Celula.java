@@ -1,6 +1,7 @@
 package jogo.logica;
 
 import java.util.ArrayList;
+import jogo.interfaces.CelulaObserver;
 
 public class Celula {
     private boolean bomba = false;
@@ -8,7 +9,12 @@ public class Celula {
     private boolean aberto = false;
     private int qtdBombas = 0;
     private ArrayList<Celula> vizinhos = new ArrayList<>();
+    private CelulaObserver observer;
 
+    // Criacao da interface saida
+    public void setObserver(CelulaObserver observer) {
+        this.observer = observer;
+    }
 
     // Metodos de entreda
     public void setBomba (){
@@ -22,6 +28,9 @@ public class Celula {
     public boolean setAbrir () {
         if (!aberto && !bandeira) {
             aberto = true;
+            if (observer != null) {
+                observer.aoAbrirCelula(); // Avisa quem estiver ouvindo
+            }
             // Abertura dos vizinhos
             if (this.qtdBombas == 0 && !this.bomba) {
                 for (Celula vizinho : vizinhos) {
